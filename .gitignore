@@ -1,0 +1,8 @@
+node_modules
+Imperial.data.json
+debug.log
+lib/twitter.js
+app.js
+package-lock.json
+*.traineddata
+.idea
