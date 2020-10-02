@@ -1,4 +1,4 @@
-import { msgHandler } from './handler'
+const msgHandler = require('./handler')
 
 const { create, decryptMedia } = require('@open-wa/wa-automate')
 const moment = require('moment-timezone')
@@ -47,6 +47,7 @@ const startServer = async () => {
             })
             // listening on message
             client.onMessage((message) => {
+
                 msgHandler(client, message)
             })
 
@@ -59,4 +60,4 @@ const startServer = async () => {
         })
 }
 
-this.startServer();
+startServer();
