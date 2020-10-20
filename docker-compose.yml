@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: futezap/futezap:latest
+    volumes:
+      - .:/app
+    entrypoint: "npm start"

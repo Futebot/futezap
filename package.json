@@ -11,8 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@open-wa/wa-automate": "^2.1.1",
+    "@open-wa/wa-automate": "^3.0.1",
     "g-i-s": "^2.1.6",
+    "gifify": "^2.4.3",
+    "gify": "^0.2.0",
+    "imgur": "^0.3.1",
     "lmgtfy": "^2.0.1",
     "usetube": "^1.1.2"
   },

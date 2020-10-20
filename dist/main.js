@@ -37,104 +37,73 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var wa_automate_1 = require("@open-wa/wa-automate");
-// const wa = require('@open-wa/wa-automate');
-var usetube = require('usetube');
-var lmgtfy = require('lmgtfy');
-var gis = require('g-i-s');
+var image_1 = require("./commands/image");
+var help_1 = require("./commands/help");
+var sticker_1 = require("./commands/sticker");
+var gif_1 = require("./commands/gif");
+var groupImage_1 = require("./commands/groupImage");
+var youtube_1 = require("./commands/youtube");
+var lmgtfy_1 = require("./commands/lmgtfy");
 wa_automate_1.create().then(function (client) { return start(client); });
 var messageControl;
 function handleMessage(message, client) {
     return __awaiter(this, void 0, void 0, function () {
-        var videos, e_1, url, e_2, e_3, e_4;
+        var command;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!(message.body === '.ping')) return [3 /*break*/, 2];
+                    if ((message.caption && !message.caption.startsWith(".")) && (message.body && !message.body.startsWith("."))) {
+                        return [2 /*return*/];
+                    }
+                    command = message.caption ? message.caption : message.body;
+                    if (!(command === '.ping')) return [3 /*break*/, 2];
                     return [4 /*yield*/, client.sendText(message.chatId, 'Pong 🏓!')];
                 case 1:
                     _a.sent();
-                    return [3 /*break*/, 26];
+                    return [3 /*break*/, 16];
                 case 2:
-                    if (!(message.body === '.help')) return [3 /*break*/, 4];
-                    return [4 /*yield*/, client.sendText(message.chatId, 'I am Futezap and I am here to help you doing your everyday tasks.' +
-                            '\n\n Available commands:\n\n' +
-                            ' *.ping* to check if I am alive!\n'
-                            + ' *.youtube "your_search"* to get a video.\n'
-                            + ' *.lmgtfy "your_search"* to get Let Me Google That For You URL.\n'
-                            + ' *.image "your_search"* to get an image.\n')];
+                    if (!(command === '.help')) return [3 /*break*/, 4];
+                    return [4 /*yield*/, client.sendText(message.chatId, help_1.helpCommand())];
                 case 3:
                     _a.sent();
-                    return [3 /*break*/, 26];
+                    return [3 /*break*/, 16];
                 case 4:
-                    if (!message.body.startsWith('.youtube')) return [3 /*break*/, 11];
-                    _a.label = 5;
+                    if (!command.startsWith('.youtube')) return [3 /*break*/, 6];
+                    return [4 /*yield*/, youtube_1.sendYoutubeURL(message, client)];
                 case 5:
-                    _a.trys.push([5, 8, , 10]);
-                    return [4 /*yield*/, usetube.searchVideo(message.body.substr(message.body.indexOf(' '), message.body.length))];
+                    _a.sent();
+                    return [3 /*break*/, 16];
                 case 6:
-                    videos = _a.sent();
-                    return [4 /*yield*/, client.sendYoutubeLink(message.chatId, "https://www.youtube.com/watch?v=" + videos.tracks[0].id)];
+                    if (!command.startsWith('.lmgtfy')) return [3 /*break*/, 8];
+                    return [4 /*yield*/, lmgtfy_1.sendLMGTFY(message, client)];
                 case 7:
                     _a.sent();
-                    return [3 /*break*/, 10];
+                    return [3 /*break*/, 16];
                 case 8:
-                    e_1 = _a.sent();
-                    return [4 /*yield*/, client.sendText(message.chatId, "Please try again.")];
+                    if (!(command.startsWith('.image') || message.body.startsWith('.img'))) return [3 /*break*/, 10];
+                    return [4 /*yield*/, image_1.sendImage(message, client)];
                 case 9:
                     _a.sent();
-                    return [3 /*break*/, 10];
-                case 10: return [3 /*break*/, 26];
+                    return [3 /*break*/, 16];
+                case 10:
+                    if (!command.startsWith('.sticker')) return [3 /*break*/, 12];
+                    return [4 /*yield*/, sticker_1.sendSticker(message, client)];
                 case 11:
-                    if (!message.body.startsWith('.lmgtfy')) return [3 /*break*/, 17];
-                    _a.label = 12;
+                    _a.sent();
+                    return [3 /*break*/, 16];
                 case 12:
-                    _a.trys.push([12, 14, , 16]);
-                    url = lmgtfy(message.body.substr(message.body.indexOf(' '), message.body.length), 'g');
-                    return [4 /*yield*/, client.sendText(message.chatId, url)];
+                    if (!command.startsWith('.gif')) return [3 /*break*/, 14];
+                    return [4 /*yield*/, gif_1.sendGifSticker(message, client)];
                 case 13:
                     _a.sent();
                     return [3 /*break*/, 16];
                 case 14:
-                    e_2 = _a.sent();
-                    return [4 /*yield*/, client.sendText(message.chatId, "Please try again.")];
+                    if (!command.startsWith('.groupimg')) return [3 /*break*/, 16];
+                    return [4 /*yield*/, groupImage_1.setGroupImage(message, client)];
                 case 15:
                     _a.sent();
-                    return [3 /*break*/, 16];
-                case 16: return [3 /*break*/, 26];
-                case 17:
-                    if (!message.body.startsWith('.image')) return [3 /*break*/, 25];
-                    _a.label = 18;
-                case 18:
-                    _a.trys.push([18, 19, , 24]);
-                    gis(message.body.substr(message.body.indexOf(' '), message.body.length), function (error, results) {
-                        client.sendFileFromUrl(message.chatId, results[0].url, results[0].url, '');
-                    });
-                    return [3 /*break*/, 24];
-                case 19:
-                    e_3 = _a.sent();
-                    _a.label = 20;
-                case 20:
-                    _a.trys.push([20, 21, , 23]);
-                    gis(message.body.substr(message.body.indexOf(' '), message.body.length), function (error, results) {
-                        client.sendFileFromUrl(message.chatId, results[1].url, results[1].url, '');
-                    });
-                    return [3 /*break*/, 23];
-                case 21:
-                    e_4 = _a.sent();
-                    return [4 /*yield*/, client.sendText(message.chatId, "Please try again.")];
-                case 22:
-                    _a.sent();
-                    return [3 /*break*/, 23];
-                case 23: return [3 /*break*/, 24];
-                case 24: return [3 /*break*/, 26];
-                case 25:
-                    if (message.body.startsWith('.groupimg')) {
-                        gis(message.body.substr(message.body.indexOf(' '), message.body.length), function (error, results) {
-                            client.setGroupIconByUrl(message.chatId, results[1].url);
-                        });
-                    }
-                    _a.label = 26;
-                case 26: return [2 /*return*/];
+                    _a.label = 16;
+                case 16: return [2 /*return*/];
             }
         });
     });

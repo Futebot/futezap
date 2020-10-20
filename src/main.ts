@@ -1,60 +1,48 @@
 import {create, Client, Message, decryptMedia} from '@open-wa/wa-automate';
-// const wa = require('@open-wa/wa-automate');
-const usetube = require('usetube')
-const lmgtfy = require('lmgtfy');
-const gis = require('g-i-s');
+import {sendImage} from "./commands/image";
+import {helpCommand} from "./commands/help";
+import {sendSticker} from "./commands/sticker";
+import {sendGifSticker} from "./commands/gif";
+import {setGroupImage} from "./commands/groupImage";
+import {sendYoutubeURL} from "./commands/youtube";
+import {sendLMGTFY} from "./commands/lmgtfy";
 
 create().then(client => start(client));
 
 let messageControl: Message;
 
 async function handleMessage(message: Message, client: Client) {
-    if (message.body === '.ping') {
+
+    if((message.caption && !message.caption.startsWith(".")) && (message.body && !message.body.startsWith("."))) {
+        return;
+    }
+
+    const command = message.caption ? message.caption : message.body;
+
+    if (command === '.ping') {
         await client.sendText(message.chatId, 'Pong 🏓!');
 
-    } else if (message.body === '.help') {
-        await client.sendText(message.chatId, 'I am Futezap and I am here to help you doing your everyday tasks.' +
-            '\n\n Available commands:\n\n' +
-            ' *.ping* to check if I am alive!\n'
-          + ' *.youtube "your_search"* to get a video.\n'
-        + ' *.lmgtfy "your_search"* to get Let Me Google That For You URL.\n'
-        + ' *.image "your_search"* to get an image.\n');
+    } else if (command === '.help') {
+        await client.sendText(message.chatId, helpCommand());
 
-    } else if (message.body.startsWith('.youtube')) {
-        try {
-            const videos = await usetube.searchVideo(message.body.substr(message.body.indexOf(' '), message.body.length));
-            await client.sendYoutubeLink(message.chatId, `https://www.youtube.com/watch?v=${videos.tracks[0].id}`);
-        } catch (e) {
-            await client.sendText(message.chatId, "Please try again.");
-        }
+    } else if (command.startsWith('.youtube')) {
+        await sendYoutubeURL(message, client);
 
-    } else if (message.body.startsWith('.lmgtfy')) {
-        try {
-        const url = lmgtfy(message.body.substr(message.body.indexOf(' '), message.body.length), 'g');
-        await client.sendText(message.chatId, url);
-        } catch (e) {
-            await client.sendText(message.chatId, "Please try again.");
-        }
+    } else if (command.startsWith('.lmgtfy')) {
+        await sendLMGTFY(message, client);
 
-    } else if (message.body.startsWith('.image')) {
-        try {
-            gis(message.body.substr(message.body.indexOf(' '), message.body.length), (error:any, results:any) => {
-                client.sendFileFromUrl(message.chatId, results[0].url, results[0].url, '');
-            });
-        } catch (e) {
-            try {
-                gis(message.body.substr(message.body.indexOf(' '), message.body.length), (error:any, results:any) => {
-                    client.sendFileFromUrl(message.chatId, results[1].url, results[1].url, '');
-                });
-            } catch (e) {
-                await client.sendText(message.chatId, "Please try again.");
-            }
-        }
-    } else if (message.body.startsWith('.groupimg')) {
-        gis(message.body.substr(message.body.indexOf(' '), message.body.length), (error:any, results:any) => {
-            client.setGroupIconByUrl(message.chatId, results[1].url);
-        });
-        client.tagEveryone()
+    } else if (command.startsWith('.image') || message.body.startsWith('.img')) {
+        await sendImage(message, client);
+
+    } else if (command.startsWith('.sticker')) {
+        await sendSticker(message, client);
+
+    } else if (command.startsWith('.gif')) {
+       await sendGifSticker(message, client);
+
+    } else if (command.startsWith('.groupimg')) {
+        await setGroupImage(message, client);
+
     }
 
     }
