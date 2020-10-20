@@ -14,5 +14,6 @@ WORKDIR /app
 COPY package.json /app/package.json
 
 RUN npm install
+RUN tsc
 
 ENTRYPOINT ["npm", "start"]
