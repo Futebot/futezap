@@ -11,10 +11,9 @@ RUN apt-get update \
 
 WORKDIR /app
 
-COPY package.json /app/package.json
+COPY . /app
 
 RUN npm install
 RUN npm install -g typescript
-RUN tsc /app
 
 ENTRYPOINT ["npm", "start"]
