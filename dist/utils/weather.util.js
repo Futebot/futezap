@@ -36,36 +36,41 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendSticker = void 0;
-var image_util_1 = require("../utils/image.util");
-function sendSticker(message, client, attempt) {
-    if (attempt === void 0) { attempt = 0; }
+exports.getSentiment = void 0;
+var NlpManager = require('node-nlp').NlpManager;
+function getSentiment(text) {
     return __awaiter(this, void 0, void 0, function () {
-        var imgUrl, e_1;
+        var manager, response;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 3, , 6]);
-                    return [4 /*yield*/, image_util_1.getImageURLFromText(message.body.substr(message.body.indexOf(' '), message.body.length))];
+                    manager = new NlpManager({ languages: ['en'], forceNER: true });
+                    // Adds the utterances and intents for the NLP
+                    manager.addDocument('en', 'hello', 'greetings.hello');
+                    manager.addDocument('en', 'howdy', 'greetings.hello');
+                    manager.addDocument('en', 'hey', 'greetings.hello');
+                    manager.addDocument('en', 'yo', 'greetings.hello');
+                    manager.addDocument('en', 'good bye', 'greetings.bye');
+                    manager.addDocument('en', 'bye bye', 'greetings.bye');
+                    manager.addDocument('en', 'see you', 'greetings.bye');
+                    // Train also the NLG
+                    manager.addAnswer('en', 'greetings.bye', 'Bye!');
+                    manager.addAnswer('en', 'greetings.bye', 'See you later!');
+                    manager.addAnswer('en', 'greetings.hello', 'Hi!!');
+                    manager.addAnswer('en', 'greetings.hello', 'Hey!!');
+                    // Train and save the model.
+                    return [4 /*yield*/, manager.train()];
                 case 1:
-                    imgUrl = _a.sent();
-                    return [4 /*yield*/, client.sendStickerfromUrl(message.chatId, imgUrl)];
+                    // Train and save the model.
+                    _a.sent();
+                    manager.save();
+                    return [4 /*yield*/, manager.process('en', text)];
                 case 2:
-                    _a.sent();
-                    return [3 /*break*/, 6];
-                case 3:
-                    e_1 = _a.sent();
-                    attempt += 1;
-                    if (!(attempt < 5)) return [3 /*break*/, 5];
-                    return [4 /*yield*/, sendSticker(message, client, attempt)];
-                case 4:
-                    _a.sent();
-                    _a.label = 5;
-                case 5: return [3 /*break*/, 6];
-                case 6: return [2 /*return*/];
+                    response = _a.sent();
+                    return [2 /*return*/, response.answer];
             }
         });
     });
 }
-exports.sendSticker = sendSticker;
-//# sourceMappingURL=sticker.js.map
+exports.getSentiment = getSentiment;
+//# sourceMappingURL=weather.util.js.map

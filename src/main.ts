@@ -1,15 +1,27 @@
-import {create, Client, Message, decryptMedia} from '@open-wa/wa-automate';
+import {create, Client, Message} from '@open-wa/wa-automate';
 import {sendImage} from "./commands/image";
-import {helpCommand} from "./commands/help";
+import {sendHelp} from "./commands/help";
 import {sendSticker} from "./commands/sticker";
 import {sendGifSticker} from "./commands/gif";
 import {setGroupImage} from "./commands/groupImage";
 import {sendYoutubeURL} from "./commands/youtube";
 import {sendLMGTFY} from "./commands/lmgtfy";
+import {sendPing} from "./commands/ping";
 
 create().then(client => start(client));
 
 let messageControl: Message;
+
+const commands = [
+    {prefix: '.ping', function: sendPing},
+    {prefix: '.help', function: sendHelp},
+    {prefix: '.youtube', function: sendYoutubeURL},
+    {prefix: '.lmgtfy', function: sendLMGTFY},
+    {prefix: '.image', function: sendImage},
+    {prefix: '.sticker', function: sendSticker},
+    {prefix: '.gif', function: sendGifSticker},
+    {prefix: '.groupimg', function: setGroupImage}
+]
 
 async function handleMessage(message: Message, client: Client) {
 
@@ -17,38 +29,19 @@ async function handleMessage(message: Message, client: Client) {
         return;
     }
 
-    const command = message.caption ? message.caption : message.body;
+    const commandCalled = message.caption ? message.caption : message.body;
 
-    if (command === '.ping') {
-        await client.sendText(message.chatId, 'Pong 🏓!');
-
-    } else if (command === '.help') {
-        await client.sendText(message.chatId, helpCommand());
-
-    } else if (command.startsWith('.youtube')) {
-        await sendYoutubeURL(message, client);
-
-    } else if (command.startsWith('.lmgtfy')) {
-        await sendLMGTFY(message, client);
-
-    } else if (command.startsWith('.image') || message.body.startsWith('.img')) {
-        await sendImage(message, client);
-
-    } else if (command.startsWith('.sticker')) {
-        await sendSticker(message, client);
-
-    } else if (command.startsWith('.gif')) {
-       await sendGifSticker(message, client);
-
-    } else if (command.startsWith('.groupimg')) {
-        await setGroupImage(message, client);
-
+    for (const command of commands) {
+        if(commandCalled === command.prefix) {
+            await command.function(message, client);
+        }
     }
 
-    }
+}
 
 function start(client: Client) {
 
+    // THIS IS TO ALLOW ME TO TEST ON MY OWN PHONE
     setInterval(() => {
         client.getMyLastMessage().then(message => {
             if (!messageControl || messageControl.content !== message.content) {

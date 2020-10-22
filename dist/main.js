@@ -44,72 +44,50 @@ var gif_1 = require("./commands/gif");
 var groupImage_1 = require("./commands/groupImage");
 var youtube_1 = require("./commands/youtube");
 var lmgtfy_1 = require("./commands/lmgtfy");
+var ping_1 = require("./commands/ping");
 wa_automate_1.create().then(function (client) { return start(client); });
 var messageControl;
+var commands = [
+    { prefix: '.ping', function: ping_1.sendPing },
+    { prefix: '.help', function: help_1.sendHelp },
+    { prefix: '.youtube', function: youtube_1.sendYoutubeURL },
+    { prefix: '.lmgtfy', function: lmgtfy_1.sendLMGTFY },
+    { prefix: '.image', function: image_1.sendImage },
+    { prefix: '.sticker', function: sticker_1.sendSticker },
+    { prefix: '.gif', function: gif_1.sendGifSticker },
+    { prefix: '.groupimg', function: groupImage_1.setGroupImage }
+];
 function handleMessage(message, client) {
     return __awaiter(this, void 0, void 0, function () {
-        var command;
+        var commandCalled, _i, commands_1, command;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     if ((message.caption && !message.caption.startsWith(".")) && (message.body && !message.body.startsWith("."))) {
                         return [2 /*return*/];
                     }
-                    command = message.caption ? message.caption : message.body;
-                    if (!(command === '.ping')) return [3 /*break*/, 2];
-                    return [4 /*yield*/, client.sendText(message.chatId, 'Pong 🏓!')];
+                    commandCalled = message.caption ? message.caption : message.body;
+                    _i = 0, commands_1 = commands;
+                    _a.label = 1;
                 case 1:
-                    _a.sent();
-                    return [3 /*break*/, 16];
+                    if (!(_i < commands_1.length)) return [3 /*break*/, 4];
+                    command = commands_1[_i];
+                    if (!(commandCalled === command.prefix)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, command.function(message, client)];
                 case 2:
-                    if (!(command === '.help')) return [3 /*break*/, 4];
-                    return [4 /*yield*/, client.sendText(message.chatId, help_1.helpCommand())];
+                    _a.sent();
+                    _a.label = 3;
                 case 3:
-                    _a.sent();
-                    return [3 /*break*/, 16];
-                case 4:
-                    if (!command.startsWith('.youtube')) return [3 /*break*/, 6];
-                    return [4 /*yield*/, youtube_1.sendYoutubeURL(message, client)];
-                case 5:
-                    _a.sent();
-                    return [3 /*break*/, 16];
-                case 6:
-                    if (!command.startsWith('.lmgtfy')) return [3 /*break*/, 8];
-                    return [4 /*yield*/, lmgtfy_1.sendLMGTFY(message, client)];
-                case 7:
-                    _a.sent();
-                    return [3 /*break*/, 16];
-                case 8:
-                    if (!(command.startsWith('.image') || message.body.startsWith('.img'))) return [3 /*break*/, 10];
-                    return [4 /*yield*/, image_1.sendImage(message, client)];
-                case 9:
-                    _a.sent();
-                    return [3 /*break*/, 16];
-                case 10:
-                    if (!command.startsWith('.sticker')) return [3 /*break*/, 12];
-                    return [4 /*yield*/, sticker_1.sendSticker(message, client)];
-                case 11:
-                    _a.sent();
-                    return [3 /*break*/, 16];
-                case 12:
-                    if (!command.startsWith('.gif')) return [3 /*break*/, 14];
-                    return [4 /*yield*/, gif_1.sendGifSticker(message, client)];
-                case 13:
-                    _a.sent();
-                    return [3 /*break*/, 16];
-                case 14:
-                    if (!command.startsWith('.groupimg')) return [3 /*break*/, 16];
-                    return [4 /*yield*/, groupImage_1.setGroupImage(message, client)];
-                case 15:
-                    _a.sent();
-                    _a.label = 16;
-                case 16: return [2 /*return*/];
+                    _i++;
+                    return [3 /*break*/, 1];
+                case 4: return [2 /*return*/];
             }
         });
     });
 }
 function start(client) {
     var _this = this;
+    // THIS IS TO ALLOW ME TO TEST ON MY OWN PHONE
     setInterval(function () {
         client.getMyLastMessage().then(function (message) {
             if (!messageControl || messageControl.content !== message.content) {

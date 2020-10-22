@@ -36,36 +36,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendSticker = void 0;
-var image_util_1 = require("../utils/image.util");
-function sendSticker(message, client, attempt) {
+exports.sendWeather = void 0;
+var weather_util_1 = require("../utils/weather.util");
+function sendWeather(message, client, attempt) {
     if (attempt === void 0) { attempt = 0; }
     return __awaiter(this, void 0, void 0, function () {
-        var imgUrl, e_1;
+        var sentiment;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 3, , 6]);
-                    return [4 /*yield*/, image_util_1.getImageURLFromText(message.body.substr(message.body.indexOf(' '), message.body.length))];
+                case 0: return [4 /*yield*/, weather_util_1.getSentiment(message.body.substr(message.body.indexOf(' '), message.body.length))];
                 case 1:
-                    imgUrl = _a.sent();
-                    return [4 /*yield*/, client.sendStickerfromUrl(message.chatId, imgUrl)];
+                    sentiment = _a.sent();
+                    return [4 /*yield*/, client.sendText(message.chatId, sentiment)];
                 case 2:
                     _a.sent();
-                    return [3 /*break*/, 6];
-                case 3:
-                    e_1 = _a.sent();
-                    attempt += 1;
-                    if (!(attempt < 5)) return [3 /*break*/, 5];
-                    return [4 /*yield*/, sendSticker(message, client, attempt)];
-                case 4:
-                    _a.sent();
-                    _a.label = 5;
-                case 5: return [3 /*break*/, 6];
-                case 6: return [2 /*return*/];
+                    return [2 /*return*/];
             }
         });
     });
 }
-exports.sendSticker = sendSticker;
-//# sourceMappingURL=sticker.js.map
+exports.sendWeather = sendWeather;
+//# sourceMappingURL=weather.js.map
