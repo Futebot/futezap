@@ -1,23 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -56,65 +37,32 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendSticker = void 0;
-var wa_automate_1 = require("@open-wa/wa-automate");
 var image_util_1 = require("../utils/image.util");
-var fs = __importStar(require("fs"));
-var mime = require('mime-types');
-var imgur = require('imgur');
-var gify = require('gify');
-var path = require('path');
 function sendSticker(message, client, attempt) {
     if (attempt === void 0) { attempt = 0; }
     return __awaiter(this, void 0, void 0, function () {
-        var filename_1, mediaData, imageBase64, imgUrl, e_1;
+        var imgUrl, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 6, , 9]);
-                    if (!message.mimetype) return [3 /*break*/, 2];
-                    filename_1 = message.t + "." + mime.extension(message.mimetype);
-                    return [4 /*yield*/, wa_automate_1.decryptMedia(message)];
+                    _a.trys.push([0, 3, , 6]);
+                    return [4 /*yield*/, image_util_1.getImageURLFromText(message.body.substr(message.body.indexOf(' '), message.body.length))];
                 case 1:
-                    mediaData = _a.sent();
-                    imageBase64 = "data:" + message.mimetype + ";base64," + mediaData.toString('base64');
-                    fs.writeFile(filename_1, mediaData, function (err) {
-                        if (err) {
-                            return console.log(err);
-                        }
-                        var input = filename_1;
-                        var output = message.t + ".gif";
-                        gify(input, output, function (err) {
-                            if (err)
-                                throw err;
-                        });
-                        imgur.setClientId('d377006206c7496');
-                        imgur.uploadFile(output)
-                            .then(function (json) {
-                            client.sendStickerfromUrl(message.chatId, json.data.link);
-                        })
-                            .catch(function (err) {
-                            console.error(err.message);
-                        });
-                    });
-                    return [3 /*break*/, 5];
-                case 2: return [4 /*yield*/, image_util_1.getImageURLFromText(message.body.substr(message.body.indexOf(' '), message.body.length))];
-                case 3:
                     imgUrl = _a.sent();
                     return [4 /*yield*/, client.sendStickerfromUrl(message.chatId, imgUrl)];
+                case 2:
+                    _a.sent();
+                    return [3 /*break*/, 6];
+                case 3:
+                    e_1 = _a.sent();
+                    attempt += 1;
+                    if (!(attempt < 5)) return [3 /*break*/, 5];
+                    return [4 /*yield*/, sendSticker(message, client, attempt)];
                 case 4:
                     _a.sent();
                     _a.label = 5;
-                case 5: return [3 /*break*/, 9];
-                case 6:
-                    e_1 = _a.sent();
-                    attempt += 1;
-                    if (!(attempt < 5)) return [3 /*break*/, 8];
-                    return [4 /*yield*/, sendSticker(message, client, attempt)];
-                case 7:
-                    _a.sent();
-                    _a.label = 8;
-                case 8: return [3 /*break*/, 9];
-                case 9: return [2 /*return*/];
+                case 5: return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     });
