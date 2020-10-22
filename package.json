@@ -12,12 +12,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@nlpjs/lang-pt": "^4.14.0",
     "@open-wa/wa-automate": "^3.0.1",
+    "axios": "^0.20.0",
     "g-i-s": "^2.1.6",
     "gifify": "^2.4.3",
     "gify": "^0.2.0",
     "imgur": "^0.3.1",
     "lmgtfy": "^2.0.1",
+    "node-nlp": "^4.14.2",
     "usetube": "^1.1.2"
   },
   "devDependencies": {
